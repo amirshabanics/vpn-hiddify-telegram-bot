@@ -5,7 +5,7 @@ from django.shortcuts import render
 from dtb.settings import DEBUG
 
 from users.models import Location
-from users.models import User
+from users.models import User, VPN, Payment
 from users.forms import BroadcastForm
 
 from users.tasks import broadcast_message
@@ -15,7 +15,7 @@ from tgbot.handlers.broadcast_message.utils import send_one_message
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = [
-        'user_id', 'username', 'first_name', 'last_name', 
+        'user_id', 'username', 'first_name', 'last_name',
         'language_code', 'deep_link',
         'created_at', 'updated_at', "is_blocked_bot",
     ]
@@ -52,3 +52,13 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display = ['id', 'user_id', 'created_at']
+
+
+@admin.register(VPN)
+class VPNAdmin(admin.ModelAdmin):
+    list_display = ["id", "user", "link", "left_days"]
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ["id", "user", "status", "amount", "to_address", "trx_hash"]

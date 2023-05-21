@@ -9,6 +9,7 @@ from telegram.ext import CallbackContext
 
 from tgbot.handlers.utils.info import extract_user_data_from_update
 from utils.models import CreateUpdateTracker, nb, CreateTracker, GetOrNoneManager
+import datetime
 
 
 class AdminUserManager(Manager):
@@ -17,6 +18,10 @@ class AdminUserManager(Manager):
 
 
 class User(CreateUpdateTracker):
+    class ChatStateChoices(models.TextChoices):
+        GET_TRX_HASH = "GET_TRX_HASH"
+        NONE = "NONE"
+
     user_id = models.PositiveBigIntegerField(primary_key=True)  # telegram_id
     username = models.CharField(max_length=32, **nb)
     first_name = models.CharField(max_length=256)
@@ -27,6 +32,12 @@ class User(CreateUpdateTracker):
     is_blocked_bot = models.BooleanField(default=False)
 
     is_admin = models.BooleanField(default=False)
+    chat_state = models.CharField(
+        max_length=64,
+        default=ChatStateChoices.NONE,
+        null=True,
+        choices=ChatStateChoices.choices
+    )
 
     objects = GetOrNoneManager()  # user = User.objects.get_or_none(user_id=<some_id>)
     admins = AdminUserManager()  # User.admins.all()
@@ -83,3 +94,30 @@ class Location(CreateTracker):
 
     def __str__(self):
         return f"user: {self.user}, created at {self.created_at.strftime('(%H:%M, %d %B %Y)')}"
+
+
+class Payment(CreateUpdateTracker):
+    class PaymentStatus(models.TextChoices):
+        # A cron job check whether time passed to pay the amount
+        FAILURE = "FAILURE"
+        IN_PROGRESS = "IN_PROGRESS"
+        PAYED = "PAYED"
+        PAYED_AND_CONFIRMED = "PAYED_AND_CONFIRMED"
+        SUCCESS = "SUCCESS"
+
+    user = models.ForeignKey(User, related_name="payments", on_delete=models.PROTECT)
+    amount = models.PositiveBigIntegerField(help_text="amount in usdt")
+    status = models.CharField(max_length=64, choices=PaymentStatus.choices, default=PaymentStatus.IN_PROGRESS)
+    to_address = models.TextField(null=False)
+    trx_hash = models.TextField()
+
+
+class VPN(CreateTracker):
+    link = models.TextField(null=False, blank=False)
+    user = models.ForeignKey(User, related_name="vpn_links", on_delete=models.PROTECT)
+    active_days = models.PositiveBigIntegerField(default=90)
+    payment = models.ForeignKey(Payment, related_name="vpn_links", null=False, on_delete=models.PROTECT)
+
+    @property
+    def left_days(self):
+        return self.active_days - (datetime.date.today() - self.created_at.date()).days

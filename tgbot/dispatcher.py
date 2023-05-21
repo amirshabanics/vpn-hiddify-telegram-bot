@@ -11,7 +11,12 @@ from dtb.settings import DEBUG
 from tgbot.handlers.broadcast_message.manage_data import CONFIRM_DECLINE_BROADCAST
 from tgbot.handlers.broadcast_message.static_text import broadcast_command
 from tgbot.handlers.onboarding.manage_data import SECRET_LEVEL_BUTTON
-from tgbot.handlers.onboarding_start.manage_data import BUY_BUTTON, EDU_BUTTON, LINK_LIST_BUTTON
+from tgbot.handlers.onboarding_start.manage_data import (
+    BUY_BUTTON,
+    EDU_BUTTON,
+    LINK_LIST_BUTTON,
+    CANCEL_BUTTON,
+)
 from tgbot.handlers.utils import files, error
 from tgbot.handlers.admin import handlers as admin_handlers
 from tgbot.handlers.location import handlers as location_handlers
@@ -30,6 +35,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_buy, pattern=f"^{BUY_BUTTON}"))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_edu, pattern=f"^{EDU_BUTTON}"))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_list, pattern=f"^{LINK_LIST_BUTTON}"))
+    dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_cancel, pattern=f"^{CANCEL_BUTTON}"))
 
     # onboarding
     # dp.add_handler(CommandHandler("start", onboarding_handlers.command_start))
