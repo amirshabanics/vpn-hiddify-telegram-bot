@@ -36,9 +36,9 @@ def command_buy(update: Update, context: CallbackContext) -> None:
     #     user_count=User.objects.count(),
     #     active_24=User.objects.filter(updated_at__gte=timezone.now() - datetime.timedelta(hours=24)).count()
     # )
-    create_payment_for_user(u)
+    payment = create_payment_for_user(u)
     context.bot.send_photo(
-        caption="send 10 usdt to this address in 10 min\nklsnsdlkvsd",
+        caption=static_text.create_payment_text.format(id=payment.id, address=payment.to_address),
         chat_id=user_id,
         photo=QR_CODE_LINK
     )
@@ -89,6 +89,7 @@ def command_cancel(update: Update, context: CallbackContext) -> None:
     user = User.get_user(update, context)
     user.chat_state = User.ChatStateChoices.NONE
     user.save()
+
     context.bot.edit_message_text(
         text="Cancel successfully",
         chat_id=user.user_id,

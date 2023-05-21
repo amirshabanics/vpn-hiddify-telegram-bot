@@ -43,7 +43,7 @@ def get_usdt_transaction_on_trc20_info(transaction_hash: str) -> TransactionInfo
         return None
 
 
-def create_payment_for_user(user: User):
+def create_payment_for_user(user: User) -> Payment:
     # todo here we must choose to_address
     user.chat_state = User.ChatStateChoices.GET_TRX_HASH
     user.save()
@@ -52,3 +52,4 @@ def create_payment_for_user(user: User):
         status=Payment.PaymentStatus.IN_PROGRESS
     ).update(status=Payment.PaymentStatus.FAILURE)
     payment = Payment.objects.create(user=user, amount=75, to_address="TPBvFMkQyw8RM3dsenZadiKXaxA4QkeZLL")
+    return payment
