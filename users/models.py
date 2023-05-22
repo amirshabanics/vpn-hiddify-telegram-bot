@@ -111,6 +111,12 @@ class Payment(CreateUpdateTracker):
     to_address = models.TextField(null=False)
     trx_hash = models.TextField()
 
+    @property
+    def expired_after(self):
+        expired = 10 - (datetime.datetime.now(tz=datetime.timezone.utc) - self.created_at).total_seconds() / 60
+
+        return expired if expired > 0 else 0
+
 
 class VPN(CreateTracker):
     link = models.TextField(null=False, blank=False)

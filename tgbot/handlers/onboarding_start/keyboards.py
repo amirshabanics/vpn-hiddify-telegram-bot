@@ -5,21 +5,29 @@ from tgbot.handlers.onboarding_start.manage_data import (
     EDU_BUTTON,
     LINK_LIST_BUTTON,
     CANCEL_BUTTON,
+    HISTORY_BUTTON,
 )
 from tgbot.handlers.onboarding_start.static_text import (
     buy_button_text,
     my_links_button_text,
     education_button_text,
     cancel_get_trx_hash,
+    my_trx_history_text,
 )
 
 
 def make_keyboard_for_start_command() -> InlineKeyboardMarkup:
-    buttons = [[
-        InlineKeyboardButton(buy_button_text, callback_data=f'{BUY_BUTTON}'),
-        InlineKeyboardButton(education_button_text, callback_data=f'{EDU_BUTTON}'),
-        InlineKeyboardButton(my_links_button_text, callback_data=f'{LINK_LIST_BUTTON}')
-    ]]
+    buttons = [
+        [
+            InlineKeyboardButton(buy_button_text, callback_data=f'{BUY_BUTTON}'),
+            InlineKeyboardButton(my_links_button_text, callback_data=f'{LINK_LIST_BUTTON}'),
+            InlineKeyboardButton(my_trx_history_text, callback_data=f'{HISTORY_BUTTON}')
+        ],
+        [
+            InlineKeyboardButton(education_button_text, callback_data=f'{EDU_BUTTON}'),
+
+        ]
+    ]
 
     return InlineKeyboardMarkup(buttons)
 

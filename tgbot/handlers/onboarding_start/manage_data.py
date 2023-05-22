@@ -1,5 +1,6 @@
 BUY_BUTTON = "BUY"
 LINK_LIST_BUTTON = "LINK"
 EDU_BUTTON = "EDU"
+HISTORY_BUTTON = "TRX_HIS"
 CANCEL_BUTTON = "CANCEL"
 QR_CODE_LINK = "https://www.investopedia.com/thmb/lPzYEpDdtNZhmDfTyEeXPhNiyqE=/750x0/filters:no_upscale():max_bytes(150000):strip_icc()/qr-code-bc94057f452f4806af70fd34540f72ad.png"

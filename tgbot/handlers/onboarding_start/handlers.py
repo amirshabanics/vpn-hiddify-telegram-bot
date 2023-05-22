@@ -6,11 +6,12 @@ from telegram.ext import CallbackContext
 
 from tgbot.handlers.onboarding_start import static_text
 from tgbot.handlers.utils.info import extract_user_data_from_update
-from users.models import User
+from users.models import User, VPN
 from users.utils import create_payment_for_user
 from tgbot.handlers.onboarding_start.keyboards import make_keyboard_for_start_command
 from tgbot.handlers.onboarding_start.state_handlers import get_trx_hash
 from tgbot.handlers.onboarding_start.manage_data import QR_CODE_LINK
+from django.conf import settings
 
 
 def command_start(update: Update, context: CallbackContext) -> None:
@@ -37,11 +38,12 @@ def command_buy(update: Update, context: CallbackContext) -> None:
     #     active_24=User.objects.filter(updated_at__gte=timezone.now() - datetime.timedelta(hours=24)).count()
     # )
     payment = create_payment_for_user(u)
-    context.bot.send_photo(
-        caption=static_text.create_payment_text.format(id=payment.id, address=payment.to_address),
-        chat_id=user_id,
-        photo=QR_CODE_LINK
-    )
+    with open(settings.BASE_DIR / settings.QR_CODE, 'rb') as qr_code:
+        context.bot.send_photo(
+            caption=static_text.create_payment_text.format(id=payment.id, address=payment.to_address),
+            chat_id=user_id,
+            photo=qr_code
+        )
     # context.bot.edit_message_text(
     #     text="you can buy",
     #     chat_id=user_id,
@@ -71,16 +73,51 @@ def command_edu(update: Update, context: CallbackContext) -> None:
 def command_list(update: Update, context: CallbackContext) -> None:
     # callback_data: SECRET_LEVEL_BUTTON variable from manage_data.py
     """ Pressed 'secret_level_button_text' after /start command"""
-    user_id = extract_user_data_from_update(update)['user_id']
+    user = User.get_user(update, context)
     # text = static_text.unlock_secret_room.format(
     #     user_count=User.objects.count(),
     #     active_24=User.objects.filter(updated_at__gte=timezone.now() - datetime.timedelta(hours=24)).count()
     # )
 
-    context.bot.edit_message_text(
-        text="your links are",
-        chat_id=user_id,
-        message_id=update.callback_query.message.message_id,
+    active_links = []
+    for v in user.vpn_links.all():
+        if v.left_days > 0:
+            active_links.append(v)
+
+    res_text = ""
+    row_text = "{index}. <a href='{link}'>Link</a> | {days:02d} days\n"
+    for index, v in enumerate(active_links):
+        res_text += row_text.format(index=index + 1, link=v.link, days=v.left_days)
+    context.bot.send_message(
+        text=res_text,
+        chat_id=user.user_id,
+        parse_mode=ParseMode.HTML
+    )
+
+
+def command_history(update: Update, context: CallbackContext) -> None:
+    # callback_data: SECRET_LEVEL_BUTTON variable from manage_data.py
+    """ Pressed 'secret_level_button_text' after /start command"""
+    user = User.get_user(update, context)
+    # text = static_text.unlock_secret_room.format(
+    #     user_count=User.objects.count(),
+    #     active_24=User.objects.filter(updated_at__gte=timezone.now() - datetime.timedelta(hours=24)).count()
+    # )
+    res_text = "id. amount | minute left | to address | status | transaction hash\n"
+    row_text = "{id}. {amount} USDT | {minute} Minutes left | {address} | {status} | {trx_hash}\n"
+    for p in user.payments.all():
+        res_text += row_text.format(
+            id=p.id,
+            amount=p.amount,
+            minute=int(p.expired_after),
+            address=p.to_address,
+            status=p.status,
+            trx_hash=p.trx_hash
+        )
+
+    context.bot.send_message(
+        text=res_text,
+        chat_id=user.user_id,
         parse_mode=ParseMode.HTML
     )
 

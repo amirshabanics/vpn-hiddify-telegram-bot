@@ -16,6 +16,7 @@ from tgbot.handlers.onboarding_start.manage_data import (
     EDU_BUTTON,
     LINK_LIST_BUTTON,
     CANCEL_BUTTON,
+    HISTORY_BUTTON,
 )
 from tgbot.handlers.utils import files, error
 from tgbot.handlers.admin import handlers as admin_handlers
@@ -35,6 +36,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_buy, pattern=f"^{BUY_BUTTON}"))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_edu, pattern=f"^{EDU_BUTTON}"))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_list, pattern=f"^{LINK_LIST_BUTTON}"))
+    dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_history, pattern=f"^{HISTORY_BUTTON}"))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_cancel, pattern=f"^{CANCEL_BUTTON}"))
 
     # onboarding

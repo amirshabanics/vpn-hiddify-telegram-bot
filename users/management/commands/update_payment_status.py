@@ -11,18 +11,20 @@ CONFIRMED_PAYMENT = "Yupi! Your payment with id={id} confirmed. Please wait to c
 class UpdatePaymentStatus(BaseCommand):
     payments = Payment.objects.filter(status=Payment.PaymentStatus.PAYED)
     for p in payments:
-        # 10 minutes
-        if (datetime.now() - p.created_at).total_seconds() > 10:
-            bot.send_message(
-                text=EXPIRED_PAYMENT.format(id=p.id),
-                chat_id=p.user.user_id,
-            )
-            continue
+
         trx_info = get_usdt_transaction_on_trc20_info(p.trx_hash)
         if trx_info.confirmed and trx_info.is_success:
             p.status = Payment.PaymentStatus.PAYED_AND_CONFIRMED
             p.save()
             bot.send_message(
                 text=CONFIRMED_PAYMENT.format(id=p.id),
+                chat_id=p.user.user_id,
+            )
+            continue
+
+        # 10 minutes
+        if p.expired_after <= 0:
+            bot.send_message(
+                text=EXPIRED_PAYMENT.format(id=p.id),
                 chat_id=p.user.user_id,
             )

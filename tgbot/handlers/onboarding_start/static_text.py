@@ -7,11 +7,13 @@ unlock_secret_room = "Congratulations! You've opened a secret room👁‍🗨. T
 buy_button_text = "Buy vpn"
 education_button_text = "How to use?"
 my_links_button_text = "My links"
+my_trx_history_text = "Transaction history"
 cancel_get_trx_hash = "Cancel payment"
 
 create_payment_text = "Create a payment with id={id}\n" \
     + "Send 10 usdt in 10 minute to:\n\n" \
-    + "{address}"
+    + "{address}\n" \
+    + "Please Send Transaction hash below."
 
 invalid_transaction_hash = "Please check the transaction hash! It is not a valid hash."
 payment_not_found = "Please check the transaction hash or amount or address you send! Not found any payment."
