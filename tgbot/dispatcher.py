@@ -11,7 +11,7 @@ from dtb.settings import DEBUG
 from tgbot.handlers.broadcast_message.manage_data import CONFIRM_DECLINE_BROADCAST
 from tgbot.handlers.broadcast_message.static_text import broadcast_command
 from tgbot.handlers.onboarding.manage_data import SECRET_LEVEL_BUTTON
-from tgbot.handlers.onboarding_start.manage_data import (
+from tgbot.handlers.vpn.manage_data import (
     BUY_BUTTON,
     EDU_BUTTON,
     LINK_LIST_BUTTON,
@@ -23,7 +23,7 @@ from tgbot.handlers.admin import handlers as admin_handlers
 from tgbot.handlers.location import handlers as location_handlers
 from tgbot.handlers.onboarding import handlers as onboarding_handlers
 from tgbot.handlers.broadcast_message import handlers as broadcast_handlers
-from tgbot.handlers.onboarding_start import handlers as onboarding_start_handlers
+from tgbot.handlers.vpn import handlers as onboarding_start_handlers
 from tgbot.main import bot
 
 

@@ -1,13 +1,13 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-from tgbot.handlers.onboarding_start.manage_data import (
+from tgbot.handlers.vpn.manage_data import (
     BUY_BUTTON,
     EDU_BUTTON,
     LINK_LIST_BUTTON,
     CANCEL_BUTTON,
     HISTORY_BUTTON,
 )
-from tgbot.handlers.onboarding_start.static_text import (
+from tgbot.handlers.vpn.static_text import (
     buy_button_text,
     my_links_button_text,
     education_button_text,

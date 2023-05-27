@@ -11,38 +11,8 @@ from dtb.celery import app
 from celery.utils.log import get_task_logger
 from tgbot.handlers.broadcast_message.utils import send_one_message, from_celery_entities_to_entities, \
     from_celery_markup_to_markup
-from users.models import Payment
-from users.utils import get_usdt_transaction_on_trc20_info, create_vpn_for_payment
-from users.consts import *
 
 logger = get_task_logger(__name__)
-
-
-@app.task(ignore_result=True)
-def update_payment_status():
-    payments = Payment.objects.filter(status__in=[Payment.PaymentStatus.PAYED, Payment.PaymentStatus.IN_PROGRESS])
-    for p in payments:
-
-        if p.status == Payment.PaymentStatus.PAYED:
-            trx_info = get_usdt_transaction_on_trc20_info(p.trx_hash)
-            if trx_info.confirmed and trx_info.is_success:
-                p.status = Payment.PaymentStatus.PAYED_AND_CONFIRMED
-                p.save()
-                vpn = create_vpn_for_payment(p)
-                send_one_message(
-                    text=CONFIRMED_PAYMENT,
-                    user_id=p.user.user_id,
-                )
-            continue
-
-        # 10 minutes
-        if p.expired_after <= 0:
-            p.status = Payment.PaymentStatus.FAILURE
-            p.save()
-            send_one_message(
-                text=EXPIRED_PAYMENT,
-                user_id=p.user.user_id,
-            )
 
 
 @app.task(ignore_result=True)
