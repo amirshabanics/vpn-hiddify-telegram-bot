@@ -30,17 +30,17 @@ def update_payment_status():
                 p.save()
                 vpn = create_vpn_for_payment(p)
                 send_one_message(
-                    text=CONFIRMED_PAYMENT.format(id=p.id, vpn=vpn.link),
+                    text=CONFIRMED_PAYMENT,
                     user_id=p.user.user_id,
                 )
-                continue
+            continue
 
         # 10 minutes
         if p.expired_after <= 0:
             p.status = Payment.PaymentStatus.FAILURE
             p.save()
             send_one_message(
-                text=EXPIRED_PAYMENT.format(id=p.id),
+                text=EXPIRED_PAYMENT,
                 user_id=p.user.user_id,
             )
 

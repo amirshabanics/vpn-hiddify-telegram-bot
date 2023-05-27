@@ -20,10 +20,7 @@ def command_start(update: Update, context: CallbackContext) -> None:
         get_trx_hash(update, context)
         return
 
-    if created:
-        text = static_text.start_created.format(first_name=u.first_name)
-    else:
-        text = static_text.start_not_created.format(first_name=u.first_name)
+    text = static_text.start_text.format(first_name=u.first_name)
     update.message.reply_text(text=text,
                               reply_markup=make_keyboard_for_start_command())
 
@@ -40,10 +37,14 @@ def command_buy(update: Update, context: CallbackContext) -> None:
     payment = create_payment_for_user(u)
     with open(settings.BASE_DIR / settings.QR_CODE, 'rb') as qr_code:
         context.bot.send_photo(
-            caption=static_text.create_payment_text.format(id=payment.id, address=payment.to_address),
+            caption=payment.to_address,
             chat_id=user_id,
             photo=qr_code
         )
+    context.bot.send_message(
+        text=static_text.create_payment_text.format(amount=payment.amount),
+        chat_id=user_id,
+    )
     # context.bot.edit_message_text(
     #     text="you can buy",
     #     chat_id=user_id,
@@ -89,7 +90,7 @@ def command_list(update: Update, context: CallbackContext) -> None:
     for index, v in enumerate(active_links):
         res_text += row_text.format(index=index + 1, link=v.link, days=v.left_days)
     context.bot.send_message(
-        text=res_text,
+        text=res_text if len(res_text) > 0 else static_text.empty_vpn_link,
         chat_id=user.user_id,
         parse_mode=ParseMode.HTML
     )

@@ -21,7 +21,7 @@ def make_keyboard_for_start_command() -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton(buy_button_text, callback_data=f'{BUY_BUTTON}'),
             InlineKeyboardButton(my_links_button_text, callback_data=f'{LINK_LIST_BUTTON}'),
-            InlineKeyboardButton(my_trx_history_text, callback_data=f'{HISTORY_BUTTON}')
+            # InlineKeyboardButton(my_trx_history_text, callback_data=f'{HISTORY_BUTTON}')
         ],
         [
             InlineKeyboardButton(education_button_text, callback_data=f'{EDU_BUTTON}'),

@@ -5,7 +5,7 @@ from django.shortcuts import render
 from dtb.settings import DEBUG
 
 from users.models import Location
-from users.models import User, VPN, Payment
+from users.models import User, Payment
 from users.forms import BroadcastForm
 
 from users.tasks import broadcast_message
@@ -52,12 +52,6 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Location)
 class LocationAdmin(admin.ModelAdmin):
     list_display = ['id', 'user_id', 'created_at']
-
-
-@admin.register(VPN)
-class VPNAdmin(admin.ModelAdmin):
-    list_display = ["id", "user", "link", "left_days"]
-
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):

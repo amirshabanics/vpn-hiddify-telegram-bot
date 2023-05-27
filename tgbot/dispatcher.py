@@ -32,11 +32,14 @@ def setup_dispatcher(dp):
     Adding handlers.py for events from Telegram
     """
 
+    dp.add_handler(CommandHandler("buy", onboarding_start_handlers.command_buy))
+    dp.add_handler(CommandHandler("education", onboarding_start_handlers.command_edu))
+    dp.add_handler(CommandHandler("links", onboarding_start_handlers.command_list))
     dp.add_handler(MessageHandler(Filters.all, onboarding_start_handlers.command_start))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_buy, pattern=f"^{BUY_BUTTON}"))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_edu, pattern=f"^{EDU_BUTTON}"))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_list, pattern=f"^{LINK_LIST_BUTTON}"))
-    dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_history, pattern=f"^{HISTORY_BUTTON}"))
+    # dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_history, pattern=f"^{HISTORY_BUTTON}"))
     dp.add_handler(CallbackQueryHandler(onboarding_start_handlers.command_cancel, pattern=f"^{CANCEL_BUTTON}"))
 
     # onboarding

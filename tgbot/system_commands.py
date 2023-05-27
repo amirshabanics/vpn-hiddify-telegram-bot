@@ -3,6 +3,11 @@ from telegram import Bot, BotCommand
 
 
 def set_up_commands(bot_instance: Bot) -> None:
+    commands = {
+        'buy': "خرید vps اختصاصی",
+        "links": "لینک‌های فعال من",
+        "education": "آموزش"
+    }
     langs_with_commands: Dict[str, Dict[str, str]] = {
         # 'en': {
         #     'start': 'Start django bot 🚀',
@@ -12,22 +17,8 @@ def set_up_commands(bot_instance: Bot) -> None:
         #     'broadcast': 'Broadcast message 📨',
         #     'export_users': 'Export users.csv 👥',
         # },
-        'en': {
-            'handlers.py': 'Buy new vpn link 🚀',
-            'my_vpn': 'List of my vpn links 📊',
-            'education': 'Learn how to use vpn link ℹ️',
-            # 'ask_location': 'Send location 📍',
-            # 'broadcast': 'Broadcast message 📨',
-            # 'export_users': 'Export users.csv 👥',
-        },
-        'fa': {
-            'handlers.py': 'خرید لینک فیلترشکن جدید 🚀',
-            'my_vpn': 'لینک‌های فیلترشکن من 📊',
-            'education': 'آموزش استفاده از فیلترشکن ℹ️',
-            # 'ask_location': 'Send location 📍',
-            # 'broadcast': 'Broadcast message 📨',
-            # 'export_users': 'Export users.csv 👥',
-        },
+        'en': commands,
+        'fa': commands,
         # 'es': {
         #     'start': 'Iniciar el bot de django 🚀',
         #     'stats': 'Estadísticas de bot 📊',
