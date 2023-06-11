@@ -24,7 +24,7 @@ def command_start(update: Update, context: CallbackContext) -> None:
 def command_buy(update: Update, context: CallbackContext) -> None:
     u = User.get_user(update, context)
     user_id = u.user_id
-    payment, amount = create_payment_for_user(u)
+    payment, vpn, amount = create_payment_for_user(u)
     if amount == 0:
         context.bot.send_message(
             chat_id=user_id,
@@ -38,7 +38,11 @@ def command_buy(update: Update, context: CallbackContext) -> None:
             photo=qr_code
         )
     context.bot.send_message(
-        text=static_text.create_payment_text.format(amount=amount),
+        text=static_text.create_payment_text.format(
+            amount=amount,
+            days=vpn.subscription.package_days,
+            usage=vpn.subscription.usage_limit
+        ),
         chat_id=user_id,
     )
 

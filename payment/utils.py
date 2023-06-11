@@ -19,9 +19,7 @@ class TransactionInfo:
         self.confirmed = confirmed
 
 
-def create_payment_for_user(user: User) -> (Payment, float):
-    user.chat_state = User.ChatStateChoices.GET_TRX_HASH
-    user.save()
+def create_payment_for_user(user: User) -> (Payment, VPN, float):
     Payment.objects.filter(
         user=user,
         status=Payment.PaymentStatus.IN_PROGRESS
@@ -36,7 +34,10 @@ def create_payment_for_user(user: User) -> (Payment, float):
         user=user,
     )
     amount_user_pay = payment.amount_after_discount - calculate_user_wallet(user)
-    return payment, amount_user_pay if amount_user_pay > 0 else 0
+    if amount_user_pay > 0:
+        user.chat_state = User.ChatStateChoices.GET_TRX_HASH
+        user.save()
+    return payment, vpn, amount_user_pay if amount_user_pay > 0 else 0
 
 
 def create_vpn_for_payment(payment: Payment) -> list[VPN]:
@@ -64,6 +65,7 @@ def create_vpn_for_payment(payment: Payment) -> list[VPN]:
         vpn_link = hiddify.get_vpn_link(v.user_uuid)
         v.link = vpn_link
         v.active_days = v.subscription.package_days
+        v.save()
         vpns.append(v)
     return vpns
 
@@ -104,7 +106,11 @@ def calculate_user_wallet(user: User):
     ).aggregate(
         total=Sum("amount")
     )["total"]
+    if deposits is None:
+        deposits = 0
     transaction = Transaction.objects.filter(payment__user=user).aggregate(total=Sum("amount"))["total"]
+    if transaction is None:
+        transaction = 0
     return deposits - transaction
 
 

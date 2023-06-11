@@ -12,6 +12,8 @@ def update_deposit_transactions_status():
     for d in deposits_trx:
         trx_info = get_usdt_transaction_on_trc20_info(d.trx_hash)
         if can_transaction_be_confirmed(trx_info) and trx_info.confirmed:
+            d.status = DepositTransaction.DepositTransactionStatus.PAYED_AND_CONFIRMED
+            d.save()
             send_one_message(
                 text=CONFIRMED_PAYMENT,
                 user_id=d.user.user_id,
@@ -38,6 +40,10 @@ def update_payment_status():
         p.status = Payment.PaymentStatus.SUCCESS
         p.save()
         create_vpn_for_payment(p)
+        send_one_message(
+            text=CONFIRMED_PAYMENT,
+            user_id=p.user.user_id,
+        )
         # if p.status == Payment.PaymentStatus.WAIT_FOR_CONFIRMED:
         #     trx_info = get_usdt_transaction_on_trc20_info(p.trx_hash)
         #     if trx_info.confirmed and trx_info.is_success:

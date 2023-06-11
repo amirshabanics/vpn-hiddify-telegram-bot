@@ -23,7 +23,7 @@ def get_trx_hash(update: Update, context: CallbackContext) -> None:
         )
         return
     trx_info = get_usdt_transaction_on_trc20_info(trx_hash)
-    if trx_info.confirmed:
+    if not can_transaction_be_confirmed(trx_info):
         context.bot.send_message(
             text=invalid_transaction_hash,
             chat_id=u.user_id,

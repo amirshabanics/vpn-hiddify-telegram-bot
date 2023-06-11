@@ -31,14 +31,19 @@ class HiddifyPanel(models.Model):
 
 class Subscription(CreateUpdateTracker):
     class SubscriptionMode(models.TextChoices):
-        NO_RESET = "no_reset"
-        DAILY = "daily"
-        WEEKLY = "weekly"
-        MONTHLY = "monthly"
+        no_reset = "no_reset"
+        daily = "daily"
+        weekly = "weekly"
+        monthly = "monthly"
 
     package_days = models.PositiveBigIntegerField(null=False, default=90)
     usage_limit = models.PositiveBigIntegerField(null=False, default=50, help_text="In GB")
-    mode = models.CharField(null=False, default=SubscriptionMode.NO_RESET, choices=SubscriptionMode.choices)
+    mode = models.CharField(
+        null=False,
+        default=SubscriptionMode.no_reset,
+        choices=SubscriptionMode.choices,
+        max_length=20,
+    )
     amount = models.PositiveBigIntegerField(null=False, default=7)
     hiddify = models.ForeignKey(HiddifyPanel, on_delete=models.CASCADE, null=False)
 
